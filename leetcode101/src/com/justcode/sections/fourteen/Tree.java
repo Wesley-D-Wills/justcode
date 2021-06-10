@@ -113,6 +113,29 @@ public class Tree {
         return root;
     }
 
+    /**
+     * LeetCode-105 easy
+     * 使用迭代的方式 完成先根遍历
+     */
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        if (root == null) {
+            return ans;
+        }
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            TreeNode node = queue.poll();
+            ans.add(node.val);
+            if (node.right != null) {
+                queue.offerFirst(node.right);
+            }
+            if (node.left != null) {
+                queue.offerFirst(node.left);
+            }
+        }
+        return ans;
+    }
 }
 
 /**
