@@ -114,7 +114,7 @@ public class Tree {
     }
 
     /**
-     * LeetCode-105 easy
+     * LeetCode-144 easy
      * 使用迭代的方式 完成先根遍历
      */
     public List<Integer> preorderTraversal(TreeNode root) {
@@ -136,27 +136,100 @@ public class Tree {
         }
         return ans;
     }
-}
 
-/**
- * Definition for a binary tree node.
- */
-class TreeNode {
-    int val;
+    /** ***********************************************
+     * 二叉查找树
+     * ************************************************/
+    /**
+     * LeetCode-99 medium
+     * 二叉查找树是有序的，对其中序遍历的结果即为排好序的数组
+     * demo1 - 中序遍历递归算法
+     * demo2 - 中序遍历非递归算法
+     * demo3 - Morris算法
+     */
+    // demp1-中序遍历递归算法
     TreeNode left;
     TreeNode right;
+    TreeNode pre;
 
-    TreeNode() {
+    public void recoverTree(TreeNode root) {
+        inorder(root);
+        int tmp = left.val;
+        left.val = right.val;
+        right.val = tmp;
     }
 
-    TreeNode(int val) {
-        this.val = val;
+    private void inorder(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        inorder(root.left);
+        if (pre != null && root.val < pre.val) {
+            if (left == null) {
+                left = pre;
+            }
+            right = root;
+        }
+        pre = root;
+        inorder(root.right);
     }
 
-    TreeNode(int val, TreeNode left, TreeNode right) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
+
+    // 中序遍历非递归算法
+    public void recoverTreeNonRecursive(TreeNode root) {
+        Deque<TreeNode> queue = new LinkedList<>();
+        TreeNode left = null;
+        TreeNode right = null;
+        TreeNode pre = null;
+        while (!queue.isEmpty() || root != null) {
+            while (root != null) {
+                queue.offerLast(root);
+                root = root.left;
+            }
+            root = queue.pollLast(); // deque 默认情况下 offer 和 poll是对立， push 和 pop 是栈
+            if (pre != null && root.val < pre.val) {
+                if (left == null) {
+                    left = pre;
+                }
+                right = root;
+            }
+            pre = root;
+            root = root.right;
+        }
+        int tmp = left.val;
+        left.val = right.val;
+        right.val = tmp;
+    }
+
+    // 中序遍历 Morris算法
+    public void recoverTreeMorris(TreeNode root) {
+        
+    }
+
+    /**
+     * LeetCode-669 medium
+     * 修建二叉搜索树:
+     *      添加一个helper方法，有点类似先根遍历的方式。
+     *      1. 一开始判断当前节点的值和low 或者 high进行比较，然后然后做裁剪
+     *      2. 然后对在【low, high】范围内的数据进行左右字数的递归调用
+     */
+    public TreeNode trimBST(TreeNode root, int low, int high) {
+        return trimHelper(root, low, high);
+    }
+
+    private TreeNode trimHelper(TreeNode root, int low, int high) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val < low) {
+            return trimHelper(root.right, low, high);
+        }
+        if (root.val > high) {
+            return trimHelper(root.left, low, high);
+        }
+        root.left = trimHelper(root.left, low, high);
+        root.right = trimHelper(root.right, low, high);
+        return root;
     }
 }
 

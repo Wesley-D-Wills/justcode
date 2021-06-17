@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/jingdizhiwa/jingdizhiwa.iml" filepath="$PROJECT_DIR$/jingdizhiwa/jingdizhiwa.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/justcode.iml" filepath="$PROJECT_DIR$/.idea/justcode.iml" />
       <module fileurl="file://$PROJECT_DIR$/leetcode101/leetcode101.iml" filepath="$PROJECT_DIR$/leetcode101/leetcode101.iml" />
     </modules>
