@@ -203,15 +203,71 @@ public class Tree {
 
     // 中序遍历 Morris算法
     public void recoverTreeMorris(TreeNode root) {
-        
+        TreeNode cur = root;
+        TreeNode mostRight;
+        TreeNode pre = null;
+        TreeNode left = null;
+        TreeNode right = null;
+
+        while (cur != null) {
+            mostRight = cur.left;
+            if (mostRight != null) {
+                while (mostRight.right != null && mostRight.right != cur) {
+                    mostRight = mostRight.right;
+                }
+                if (mostRight.right == null) {
+                    mostRight.right = cur;
+                    cur = cur.left;
+                    continue;
+                } else {
+                    mostRight.right = null;
+                }
+            }/* else {
+
+            }*/
+            if (pre != null && cur.val < pre.val) {
+                if (left == null) {
+                    left = pre;
+                }
+                right = cur;
+            }
+            pre = cur;
+            cur = cur.right;
+        }
+        int tmp = left.val;
+        left.val = right.val;
+        right.val = tmp;
     }
+
+    /* Morris算法模板
+    private void Morris(TreeNode root) {//step:当前步 nowPath:当前路径，path:当前步的后续可走的步
+        TreeNode cur = root;
+        TreeNode mostRight = null;
+        while (cur != null) {
+            mostRight = cur.left;//左子树
+            if (mostRight != null) {//2
+                while (mostRight.right != null && mostRight.right != cur) {//左子树的最右节点
+                    mostRight = mostRight.right;
+                }
+                if (mostRight.right == null) {//2.1
+                    mostRight.right = cur;
+                    cur = cur.left;
+                    continue;
+                } else {//2.2
+                    mostRight.right = null;
+                }
+            }
+            cur = cur.right;//1 2.2
+        }
+    }
+    */
 
     /**
      * LeetCode-669 medium
      * 修建二叉搜索树:
-     *      添加一个helper方法，有点类似先根遍历的方式。
-     *      1. 一开始判断当前节点的值和low 或者 high进行比较，然后然后做裁剪
-     *      2. 然后对在【low, high】范围内的数据进行左右字数的递归调用
+     * 添加一个helper方法，有点类似先根遍历的方式。
+     * 1. 一开始判断当前节点的值和low 或者 high进行比较，然后然后做裁剪
+     * 2. 然后对在【low, high】范围内的数据进行左右字数的递归调用
      */
     public TreeNode trimBST(TreeNode root, int low, int high) {
         return trimHelper(root, low, high);
