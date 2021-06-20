@@ -4,11 +4,14 @@ import com.justcode.sections.fourteen.Tree;
 import com.justcode.sections.fourteen.TreeNode;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
-/** ***********************************************
- * 练习题
- * ************************************************/
+/**
+ * **********************************************
+ * 练习题-基础难度
+ ************************************************/
 public class Practice {
     /**
      * LeetCode-226
@@ -102,6 +105,7 @@ public class Practice {
      * 左叶子节点之和
      */
     int sum = 0;
+
     public int sumOfLeftLeaves(TreeNode root) {
         dfs(root, false);
         return sum;
@@ -152,6 +156,7 @@ public class Practice {
      * 把二叉搜索树转换为累加树
      */
     int preSum = 0;
+
     public TreeNode convertBST(TreeNode root) {
         if (root == null) {
             return null;
@@ -162,6 +167,7 @@ public class Practice {
         convertBST(root.left);
         return root;
     }
+
     // Morris算法
     public TreeNode convertBST1(TreeNode root) {
         TreeNode cur = root;
@@ -193,8 +199,13 @@ public class Practice {
     /**
      * LeetCode-235
      * 二叉搜索树的最近公共祖先
+     * 1. 对于二叉搜索树，从上到下搜索如果第一次遇见 x< cur < y 基本上就是最近公共祖先
+     * 如果cur < x < y 则遍历右子树
+     * 否则遍历左子树
+     * 2. 对于一般的二叉树，则遍历树的路径，找到包含两个节点的路径，返回其最近公共祖先
      */
     TreeNode ans = null;
+
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if (root == p || root == q) {
             return root;
@@ -221,5 +232,78 @@ public class Practice {
             ans = root.left;
             commonHelper(root.left, p, q);
         }
+    }
+
+    /**
+     * LeetCode-236
+     * 二叉树的最近公共祖先
+     * 1. 对于二叉搜索树，从上到下搜索如果第一次遇见 x< cur < y 基本上就是最近公共祖先
+     * 如果cur < x < y 则遍历右子树
+     * 否则遍历左子树
+     * 2. 对于一般的二叉树，则遍历树的路径，找到包含两个节点的路径，返回其最近公共祖先
+     */
+    List<TreeNode> pathAns = null;
+    public TreeNode lowestCommonAncestor236(TreeNode root, TreeNode p, TreeNode q) {
+        List<TreeNode> path1 = null;
+        List<TreeNode> path2 = null;
+        commonHelper236(root, p, new ArrayList<>(), 0); // contains 表示一个路径上目前已经包含多少个节点了
+        path1 = new ArrayList<>(pathAns);
+        pathAns.clear();
+        commonHelper236(root, q, new ArrayList<>(), 0); // contains 表示一个路径上目前已经包含多少个节点了
+        path2 = new ArrayList<>(pathAns);
+        int index = 0;
+        TreeNode node = null;
+        while (index < path1.size() && index < path2.size()) {
+            if (path1.get(index).equals(path2.get(index))) {
+                node = path1.get(index);
+            } else {
+                break;
+            }
+        }
+        return node;
+    }
+
+    private void commonHelper236(TreeNode root, TreeNode node, List<TreeNode> path, int contains) {
+        if (root == null) {
+            if (contains != 0) {
+                pathAns = new ArrayList<>(path);
+            }
+            return;
+        }
+        path.add(root);
+        if (root.val == node.val) {
+            contains++;
+        }
+        commonHelper236(root.left, node, path, contains);
+        commonHelper236(root.right, node, path, contains);
+        path.remove(path.size() - 1);
+    }
+
+    /**
+     * LeetCode-530
+     * 二叉搜索树的最小绝对差
+     */
+    int min = Integer.MAX_VALUE;
+    TreeNode pre;
+
+    public int getMinimumDifference(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        // 中序遍历
+        minHelper(root);
+        return min;
+    }
+
+    private void minHelper(TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        minHelper(root.left);
+        if (pre != null) {
+            min = Math.min(Math.abs(pre.val - root.val), min);
+        }
+        pre = root;
+        minHelper(root.right);
     }
 }
