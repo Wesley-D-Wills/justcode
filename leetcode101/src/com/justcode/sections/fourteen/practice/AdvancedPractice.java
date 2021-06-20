@@ -144,4 +144,95 @@ public class AdvancedPractice {
         }
         return ans;
     }
+
+    /**
+     * LeetCode-897
+     * 递增顺序搜索树
+     */
+    public TreeNode increasingBST(TreeNode root) {
+        if (root == null) {
+            return root;
+        }
+        Deque<TreeNode> stack = new ArrayDeque<>();
+        TreeNode head = null;
+        TreeNode pre = null;
+        while (!stack.isEmpty() || root != null) {
+            while (root != null) {
+                stack.offerLast(root);
+                root = root.left;
+            }
+            root = stack.pollLast();
+            if (head == null) {
+                head = root;
+            }
+            if (pre != null) {
+                pre.right = root;
+            }
+            pre = root;
+            // pre.right = null;
+            pre.left = null;
+            root = root.right;
+        }
+        return head;
+    }
+
+    public static void main(String[] args) {
+        TreeNode root = new TreeNode(2);
+        root.left = new TreeNode(1);
+        root.right = new TreeNode(4);
+        root.right.left = new TreeNode(3);
+        AdvancedPractice advancedPractice = new AdvancedPractice();
+        advancedPractice.increasingBST(root);
+    }
+
+    /**
+     * LeetCode-653
+     * 两数之和 IV - 输入 BST
+     */
+    public boolean findTarget(TreeNode root, int k) {
+        Set<Integer> set = new HashSet<>();
+        return dfs(root, k, set);
+    }
+
+    private boolean dfs(TreeNode root, int k, Set<Integer> set) {
+        if (root == null) {
+            return false;
+        }
+        int val = root.val;
+        if (set.contains(val)) {
+            return true;
+        }
+        set.add(k - val);
+        return dfs(root.left, k, set) ||
+                dfs(root.right, k, set);
+    }
+
+    /**
+     * LeetCode-450
+     * 删除二叉搜索树中的节点
+     */
+    public TreeNode deleteNode(TreeNode root, int key) {
+        if (root == null) {
+            return null;
+        }
+        if (root.val == key) {
+            if (root.left == null) {
+                return root.right;
+            }
+            if (root.right == null) {
+                return root.left;
+            }
+            TreeNode most = root.right;
+            TreeNode move = root.left.right;
+            root.left.right = most;
+            while (most.left != null) {
+                most = most.left;
+            }
+            most.left = move;
+            return root.left;
+        }
+        root.left = deleteNode(root.left, key);
+        root.right = deleteNode(root.right, key);
+        return root;
+    }
 }
