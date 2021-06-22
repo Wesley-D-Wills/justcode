@@ -93,4 +93,32 @@ public class MyList {
         }
         dfs(l1, l2, cur.next);
     }
+
+    /**
+     * LeetCode-24
+     * 两两交换链表中的节点
+     */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode ans = head.next;
+        ListNode pre = head;
+
+        ListNode next = head.next.next;
+        head.next.next = head;
+        head.next = next;
+
+        ListNode cur = next;
+        while (cur != null && cur.next != null) {
+            pre.next = cur.next;
+            pre = cur;
+
+            next = cur.next.next;
+            cur.next.next = cur;
+            cur.next = next;
+            cur = next;
+        }
+        return ans;
+    }
 }
