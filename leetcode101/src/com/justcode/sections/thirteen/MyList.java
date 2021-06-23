@@ -2,6 +2,9 @@ package com.justcode.sections.thirteen;
 
 import com.justcode.sections.fourteen.TreeNode;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class MyList {
     /** ***********************************************
      * 链表的基本操作
@@ -28,6 +31,7 @@ public class MyList {
 
     // 递归操作
     private ListNode preDfs = null;
+
     public ListNode reverseListDfs(ListNode head) {
         if (head == null) {
             return preDfs;
@@ -69,6 +73,7 @@ public class MyList {
 
     // 递归算法
     private ListNode head = new ListNode(0);
+
     public ListNode mergeTwoListsDfs(ListNode l1, ListNode l2) {
         ListNode cur = head;
         dfs(l1, l2, cur);
@@ -120,5 +125,81 @@ public class MyList {
             cur = next;
         }
         return ans;
+    }
+
+    /** ***********************************************
+     * 其他链表技巧
+     * ************************************************/
+    /**
+     * LeetCode-160
+     * 1. 相交链表
+     * 2. 比较耗费空间的做法：hash集合
+     */
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        ListNode curA = headA;
+        ListNode curB = headB;
+        while (curA != curB) {
+            if (curA == null) {
+                curA = headB;
+            } else {
+                curA = curA.next;
+            }
+            if (curB == null) {
+                curB = headA;
+            } else {
+                curB = curB.next;
+            }
+        }
+        return curA;
+    }
+
+    // hash集合
+    public ListNode getIntersectionNodeSet(ListNode headA, ListNode headB) {
+        Set<ListNode> set = new HashSet<>();
+        while (headA != null) {
+            set.add(headA);
+            headA = headA.next;
+        }
+        while (headB != null) {
+            if (set.contains(headB)) {
+                return headB;
+            }
+            headB = headB.next;
+        }
+        return null;
+    }
+
+    /**
+     * LeetCode-234
+     * 1. 回文链表
+     *      快慢指针的方法
+     */
+    public boolean isPalindrome(ListNode head) {
+        if (head == null || head.next == null) {
+            return true;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast.next != null && fast.next.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        // 翻转链表
+        ListNode curN = slow.next;
+        ListNode pre = null;
+        while (curN != null) {
+            ListNode next = curN.next;
+            curN.next = pre;
+            pre = curN;
+            curN = next;
+        }
+        while (pre != null && head != null) {
+            if (pre.val != head.val) {
+                return false;
+            }
+            pre = pre.next;
+            head = head.next;
+        }
+        return true;
     }
 }
