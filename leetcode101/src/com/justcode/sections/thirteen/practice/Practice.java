@@ -209,10 +209,6 @@ public class Practice {
      * 排序链表
      *      1. 归并排序： 时间复杂度 O(nLogn),
      */
-//    public ListNode sortList(ListNode head) {
-//        return sortList(head);
-//    }
-
     private ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
             return head;
