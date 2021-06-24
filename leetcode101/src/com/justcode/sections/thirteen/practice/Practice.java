@@ -147,11 +147,69 @@ public class Practice {
      * 练习题-进阶难度
      ************************************************/
     /**
+     * LeetCode-147
+     * 对链表进行插入排序
+     *      1. 链表插入排序： 时间复杂度O(n^2), 空间复杂度O(1)
+     */
+    // 1. 插入排序
+    public ListNode insertionSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(0, head);
+
+        ListNode cur = head.next;
+        ListNode lastSorted = head;
+        while (cur != null) {
+            if (lastSorted.val <= cur.val) {
+                lastSorted = lastSorted.next;
+                cur = lastSorted.next;
+            } else {
+                ListNode pre = dummy;
+                while (pre.next.val <= cur.val) {
+                    pre = pre.next;
+                }
+                lastSorted.next = cur.next;
+                cur.next = pre.next;
+                pre.next = cur;
+                cur = lastSorted.next;
+            }
+        }
+
+        return dummy.next;
+    }
+    // 1.1 插入排序
+    public ListNode insertionSortList_1_1(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(0, head);
+        ListNode cur = head.next;
+        ListNode pre = head;
+        while (cur != null) {
+            if (pre.val <= cur.val) {
+                pre = cur;
+                cur = cur.next;
+            } else {
+                ListNode tmp = dummy;
+                while (tmp.next.val <= cur.val) {
+                    tmp = tmp.next;
+                }
+                pre.next = cur.next;
+                cur.next = tmp.next;
+                tmp.next = cur;
+                cur = pre.next;
+            }
+        }
+        return dummy.next;
+    }
+
+    /**
      * LeetCode-148
      * 排序链表
-     *      1. 快排
+     *      1.
      */
 //    public ListNode sortList(ListNode head) {
-//
+        
 //    }
 }
