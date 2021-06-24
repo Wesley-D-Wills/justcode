@@ -207,9 +207,63 @@ public class Practice {
     /**
      * LeetCode-148
      * 排序链表
-     *      1.
+     *      1. 归并排序： 时间复杂度 O(nLogn),
      */
 //    public ListNode sortList(ListNode head) {
-        
+//        return sortList(head);
 //    }
+
+    private ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode slow = head;
+        ListNode fast = head.next;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        ListNode mid = slow.next;
+        slow.next = null;
+        ListNode list1 = sortList(head);
+        ListNode list2 = sortList(mid);
+        ListNode sorted = merge(list1, list2);
+        return sorted;
+    }
+    public ListNode merge(ListNode head1, ListNode head2) {
+        ListNode dummyHead = new ListNode(0);
+        ListNode pre = dummyHead;
+        while (head1 != null && head2 != null) {
+            if (head1.val <= head2.val) {
+                pre.next = head1;
+                head1 = head1.next;
+            } else {
+                pre.next = head2;
+                head2 = head2.next;
+            }
+            pre = pre.next;
+        }
+        if (head1 == null) {
+            pre.next = head2;
+        } else {
+            pre.next = head1;
+        }
+//        ListNode temp = dummyHead, temp1 = head1, temp2 = head2;
+//        while (temp1 != null && temp2 != null) {
+//            if (temp1.val <= temp2.val) {
+//                temp.next = temp1;
+//                temp1 = temp1.next;
+//            } else {
+//                temp.next = temp2;
+//                temp2 = temp2.next;
+//            }
+//            temp = temp.next;
+//        }
+//        if (temp1 != null) {
+//            temp.next = temp1;
+//        } else if (temp2 != null) {
+//            temp.next = temp2;
+//        }
+        return dummyHead.next;
+    }
 }
