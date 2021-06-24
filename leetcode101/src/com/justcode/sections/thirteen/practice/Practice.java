@@ -207,15 +207,15 @@ public class Practice {
     /**
      * LeetCode-148
      * 排序链表
-     *      1. 归并排序： 时间复杂度 O(nLogn),
+     *      1. 归并排序： 时间复杂度 O(nLogn), 空间复杂度O(n) 存在递归空间
      */
     private ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
             return head;
         }
         ListNode slow = head;
-        ListNode fast = head.next;
-        while (fast != null && fast.next != null) {
+        ListNode fast = head;
+        while (fast.next != null && fast.next.next != null) {
             slow = slow.next;
             fast = fast.next.next;
         }
@@ -226,7 +226,7 @@ public class Practice {
         ListNode sorted = merge(list1, list2);
         return sorted;
     }
-    public ListNode merge(ListNode head1, ListNode head2) {
+    private ListNode merge(ListNode head1, ListNode head2) {
         ListNode dummyHead = new ListNode(0);
         ListNode pre = dummyHead;
         while (head1 != null && head2 != null) {
@@ -244,22 +244,6 @@ public class Practice {
         } else {
             pre.next = head1;
         }
-//        ListNode temp = dummyHead, temp1 = head1, temp2 = head2;
-//        while (temp1 != null && temp2 != null) {
-//            if (temp1.val <= temp2.val) {
-//                temp.next = temp1;
-//                temp1 = temp1.next;
-//            } else {
-//                temp.next = temp2;
-//                temp2 = temp2.next;
-//            }
-//            temp = temp.next;
-//        }
-//        if (temp1 != null) {
-//            temp.next = temp1;
-//        } else if (temp2 != null) {
-//            temp.next = temp2;
-//        }
         return dummyHead.next;
     }
 }
