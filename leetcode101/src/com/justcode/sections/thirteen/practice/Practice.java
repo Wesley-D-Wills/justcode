@@ -204,10 +204,65 @@ public class Practice {
         return dummy.next;
     }
 
+    // 冒泡排序
+    public ListNode bubbleSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode pre;
+        ListNode cur;
+        boolean isSorted;
+        while (true) {
+            isSorted = true;
+            pre = head;
+            cur = head.next;
+            while (cur != null) {
+                if (pre.val > cur.val) {
+                    swap(pre, cur);
+                    isSorted = false;
+                }
+                pre = cur;
+                cur = cur.next;
+            }
+            if (isSorted) {
+                break;
+            }
+        }
+        return head;
+    }
+
+    private void swap(ListNode pre, ListNode cur) {
+        int tmp = pre.val;
+        pre.val = cur.val;
+        cur.val = tmp;
+    }
+
+    // 选择排序
+    public ListNode selectSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode sorted = head;
+        while (sorted != null) {
+            ListNode cur = sorted;
+            ListNode tmp = cur;
+            while (cur != null) {
+                if (tmp.val > cur.val) {
+                    tmp = cur;
+                }
+                cur = cur.next;
+            }
+            swap(sorted, tmp);
+            sorted = sorted.next;
+        }
+        return head;
+    }
+
     /**
      * LeetCode-148
      * 排序链表
      *      1. 归并排序： 时间复杂度 O(nLogn), 空间复杂度O(n) 存在递归空间
+     *      2. 快速排序，选择排序，冒泡排序 https://www.cnblogs.com/TenosDoIt/p/3666585.html
      */
     private ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
@@ -245,5 +300,31 @@ public class Practice {
             pre.next = head1;
         }
         return dummyHead.next;
+    }
+
+    // 快速排序
+    public ListNode quickSortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        quickSortList(head, null);
+        return head;
+    }
+
+    private void quickSortList(ListNode head, ListNode tail) {
+        if (head == tail || head.next == tail) {
+            return;
+        }
+        int val = head.val;
+        ListNode cur = head;
+        for (ListNode i = head.next; i != tail ; i = i.next) {
+            if (i.val < val) {
+                cur = cur.next;
+                swap(i, cur);
+            }
+        }
+        swap(head, cur);
+        quickSortList(head, cur);
+        quickSortList(cur.next, tail);
     }
 }
