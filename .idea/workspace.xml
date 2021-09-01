@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b5bdbeb6-b80f-4170-a9c7-e6e9d51412ab" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/resource/git.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+    <list default="true" id="b5bdbeb6-b80f-4170-a9c7-e6e9d51412ab" name="Default Changelist" comment="添加git总结">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/leetcode101/resources/labuladong的算法小抄（修订）.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/leetcode101/resources/labuladong的算法小抄（修订）.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resource/git.md" beforeDir="false" afterPath="$PROJECT_DIR$/resource/git.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,17 +45,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
-      <option name="arquillianRunConfiguration">
-        <value>
-          <option name="containerStateName" value="" />
-        </value>
-      </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.MyString" />
@@ -69,8 +59,22 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1627315860808</updated>
-      <workItem from="1627315863886" duration="3629000" />
+      <workItem from="1627315863886" duration="5537000" />
+      <workItem from="1627489119383" duration="109000" />
+      <workItem from="1627647981323" duration="3000" />
+      <workItem from="1628520595236" duration="2220000" />
+      <workItem from="1629121259940" duration="146000" />
+      <workItem from="1629121421991" duration="24000" />
+      <workItem from="1629121452053" duration="9048000" />
     </task>
+    <task id="LOCAL-00001" summary="添加git总结">
+      <created>1627393657881</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1627393657881</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -86,5 +90,10 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="添加git总结" />
+    <option name="LAST_COMMIT_MESSAGE" value="添加git总结" />
   </component>
 </project>
