@@ -404,7 +404,20 @@ Maven生命周期是抽象的，这意味着生命周期本身不做任何实际
   > 在[Maven实战3.3章节中]()，介绍由于历史原因，Maven的核心插件之一——compile插件默认只支持编译Java1.3，因此需要配置该插件使其支持Java5 或者8。（Java 5 开始引入的注解。如果有注解Java 3则compile失败）
   >
   > ```xml
-  > <!-- 在配置插件的过程中，如果插件是Maven官方的插件，可以省略groupId的配置（不推荐） --><build>	<plugins> 	<plugin>     	<groupId>org.apache.maven.plugins</groupId>         <artifactId>maven-compiler-plugin</artifactId>         <version>2.1</version>         <configuration>         	<source>1.5</source>             <target>1.5</target>         </configuration>     </plugin> </plugins></build>
+  > <!-- 在配置插件的过程中，如果插件是Maven官方的插件，可以省略groupId的配置（不推荐） -->
+  > <build>
+  >   <plugins>
+  >     <plugin>     	
+  >       <groupId>org.apache.maven.plugins</groupId>         
+  >       <artifactId>maven-compiler-plugin</artifactId>         
+  >       <version>2.1</version>         
+  >       <configuration>         	
+  >         <source>1.5</source>             
+  >         <target>1.5</target>         
+  >       </configuration>     
+  >     </plugin> 
+  >   </plugins>
+  > </build>
   > ```
   >
   > 
@@ -418,7 +431,47 @@ Maven生命周期是抽象的，这意味着生命周期本身不做任何实际
   > 以Maven-antrun-plugin为例，他有一个目标，可以用来在Maven中调用Ant任务。用户将maven-antrun-plugin:run绑定到多个生命周期阶段上，再加上不同的配置，就可以让Maven在不同的生命阶段执行不同的任务。如下：
   >
   > ```xml
-  > <build>	<plugins> 	<plugin>     	<groupId>org.apache.maven.plugins</groupId>         <artifactId>maven-antrun-plugin</artifactId>         <version>1.3</version>         <executions>         	<execution>             	<id>ant-validate</id>                 <phase>validate</phase>                 <goals>                 	<goal>run</goal>                 </goals>                 <configuration>                 	<tasks>                     	<echo>I'm bound to validate phase.</echo>                     </tasks>                 </configuration>             </execution>             <execution>             	<id>ant-verify</id>                 <phase>verify</phase>                 <goals>                 	<goal>run</goal>                 </goals>                 <configuration>                 	<tasks>                     	<echo>I'm bound to verify phase.</echo>                     </tasks>                 </configuration>             </execution>         </executions>     </plugin> </plugins></build><!-- 	上述代码片段中，首先，maven-antrun-plugin:run与validate阶段绑定，从而构成一个id为ant-validate的任务。	插件全局配置中的configuration元素位于plugin元素下面，而这里的configuration元素位于execution元素下，表示这是特定任务的配置，而非插件整体的配置。	ant-validate任务配置了一个echo ant任务，向命令行输出一段文字。第二个任务id为ant-verify，它绑定了verify阶段，同样输出一段文字到命令行，告诉该任务绑定到了verify阶段。-->
+  > <build>	
+  >   <plugins> 	
+  >     <plugin>     	
+  >       <groupId>org.apache.maven.plugins</groupId>         
+  >       <artifactId>maven-antrun-plugin</artifactId>         
+  >       <version>1.3</version>         
+  >       <executions>         	
+  >         <execution>             	
+  >           <id>ant-validate</id>                 
+  >           <phase>validate</phase>                 
+  >           <goals>                 	
+  >             <goal>run</goal>                 
+  >           </goals>                 
+  >           <configuration>                 	
+  >             <tasks>                     	
+  >               <echo>I'm bound to validate phase.</echo>                     
+  >             </tasks>                 
+  >           </configuration>             
+  >         </execution>             
+  >         <execution>             	
+  >           <id>ant-verify</id>                 
+  >           <phase>verify</phase>                 
+  >           <goals>                 	
+  >             <goal>run</goal>                 
+  >           </goals>                 
+  >           <configuration>                 	
+  >             <tasks>                     	
+  >               <echo>I'm bound to verify phase.</echo>                     
+  >             </tasks>                 
+  >           </configuration>             
+  >         </execution>         
+  >       </executions>     
+  >     </plugin> 
+  >   </plugins>
+  > </build>
+  > <!-- 	
+  > 上述代码片段中，首先，maven-antrun-plugin:run与validate阶段绑定，从而构成一个id为ant-validate的任务。	
+  > 插件全局配置中的configuration元素位于plugin元素下面，而这里的configuration元素位于execution元素下，表示这是特定任务的配置，而非插件整体的配置。	
+  > 
+  > ant-validate任务配置了一个echo ant任务，向命令行输出一段文字。第二个任务id为ant-verify，它绑定了verify阶段，同样输出一段文字到命令行，告诉该任务绑定到了verify阶段。
+  > -->
   > ```
 
 ### 6.4 插件仓库
@@ -430,7 +483,20 @@ Maven会区别对待依赖的远程仓库 与 插件的远程仓库。
 > 不同于repositories 及其repository子元素，插件的远程仓库使用 pluginRepositories和 pluginRepository配置，如下：
 >
 > ```xml
-> <pluginRepositories>	<pluginRepository> 	<id>central</id>     <name>Maven plugin repository</name>     <url>http://repo1.maven.org/maven2</url>     <layout>default</layout>     <snapshots>     	<enabled>false</enabled>     </snapshots>     <releases>     	<updatePolicy>never</updatePolicy>     </releases> </pluginRepository></pluginRepositories>
+> <pluginRepositories>	
+>   <pluginRepository> 	
+>     <id>central</id>     
+>     <name>Maven plugin repository</name>     
+>     <url>http://repo1.maven.org/maven2</url>     
+>     <layout>default</layout>     
+>     <snapshots>     	
+>       <enabled>false</enabled>     
+>     </snapshots>     
+>     <releases>     	
+>       <updatePolicy>never</updatePolicy>     
+>     </releases> 
+>   </pluginRepository>
+> </pluginRepositories>
 > ```
 
 
