@@ -97,7 +97,7 @@ Maven 3，简单地运行 **mvn archetype :generate**
   * `artifactId` ： 定义实际项目中的一个Maven项目(模块)，推荐的做法是使用实际项目名称作为artifactId的前缀
   * `version` ： 定义了Maven项目当前所处的版本
   * `packaging` ： 定义Maven项目的打包方式
-  * `classifier` ： 该元素用来帮助定义构建输出的一些附属构建。附属构建与主构建对应，如主构件为xxx-1.0.0.jar，该项目可能还会通过使用一些插件生成如xxx-1.0.0-javadoc.jar、xxx-1.0.0-source.jar这样的一些舒服构建，其包含了Java文档和源代码。这时候javadoc 和 source就是这两个附属构建的classifier。这样附属构建也就拥有了自己唯一的坐标。
+  * `classifier` ： 该元素用来帮助定义构建输出的一些附属构建。附属构建与主构建对应，如主构件为xxx-1.0.0.jar，该项目可能还会通过使用一些插件生成如xxx-1.0.0-javadoc.jar、xxx-1.0.0-source.jar这样的一些附属构建，其包含了Java文档和源代码。这时候javadoc 和 source就是这两个附属构建的classifier。这样附属构建也就拥有了自己唯一的坐标。**注意**：不能直接定义项目的classifier，因为附属构建不是项目直接默认生成的，而是有附加的插件帮助生成。
 
 * 依赖的配置
 
@@ -361,7 +361,7 @@ Maven生命周期是抽象的，这意味着生命周期本身不做任何实际
   >          <version>2.1.1</version>
   >          <executions>
   >          	<execution>
-  >              	<id>attach-sources</id>
+  >              	<id>attach-sources</id> 
   >                  <phase>verify</phase>
   >                  <goals>
   >                  	<goal>jar-bo-fork</goal>
@@ -371,6 +371,10 @@ Maven生命周期是抽象的，这意味着生命周期本身不做任何实际
   >      </plugin>
   >  </plugins>
   > </build>
+  > <!-- 
+  > 	配置了一个id为attach-sources的任务，绑定到verify生命周期阶段，再通过goals配置指定要执行插件的目标。
+  > 	有时候，即使不通过phase 元素配置生命周期阶段，插件目标也能够绑定到生命周期中去。例如，可以尝试删除上述配置中的phase一行，再次执行mvn verify，仍然可以看到该插件执行了，出现这一现象的原因是：有很多插件的目标在编写时已经定义了默认的绑定阶段。
+  > -->
   > ```
   >
   > 
@@ -395,7 +399,7 @@ Maven生命周期是抽象的，这意味着生命周期本身不做任何实际
 
   并不是所有的插件都适合从命令行配置，有些参数的值从项目创建到项目发布都不会改变，或者说很少改变，对于这种情况，在POM文件中一次性配置就显然比重复再命令行输入要方便。
 
-  用户可以在声明插件的时候，对此插件进行一个全局的配置。也就是说，所有的该基于该插件目标的任务，都会使用这些配置。
+  用户可以在声明插件的时候，对此插件进行一个全局的配置。也就是说，所有的基于该插件目标的任务，都会使用这些配置。
 
   > 例如：
   >
@@ -406,17 +410,17 @@ Maven生命周期是抽象的，这意味着生命周期本身不做任何实际
   > ```xml
   > <!-- 在配置插件的过程中，如果插件是Maven官方的插件，可以省略groupId的配置（不推荐） -->
   > <build>
-  >   <plugins>
-  >     <plugin>     	
-  >       <groupId>org.apache.maven.plugins</groupId>         
-  >       <artifactId>maven-compiler-plugin</artifactId>         
-  >       <version>2.1</version>         
-  >       <configuration>         	
-  >         <source>1.5</source>             
-  >         <target>1.5</target>         
-  >       </configuration>     
-  >     </plugin> 
-  >   </plugins>
+  > 	<plugins>
+  >  	<plugin>
+  >      	<groupId>org.apache.maven.plugins</groupId>
+  >          <artifactId>maven-compiler-plugin</artifactId>
+  >          <version>2.1</version>
+  >          <configuration>
+  >          	<source>1.5</source>
+  >              <target>1.5</target>
+  >          </configuration>
+  >      </plugin>
+  >  </plugins>
   > </build>
   > ```
   >
@@ -431,46 +435,45 @@ Maven生命周期是抽象的，这意味着生命周期本身不做任何实际
   > 以Maven-antrun-plugin为例，他有一个目标，可以用来在Maven中调用Ant任务。用户将maven-antrun-plugin:run绑定到多个生命周期阶段上，再加上不同的配置，就可以让Maven在不同的生命阶段执行不同的任务。如下：
   >
   > ```xml
-  > <build>	
-  >   <plugins> 	
-  >     <plugin>     	
-  >       <groupId>org.apache.maven.plugins</groupId>         
-  >       <artifactId>maven-antrun-plugin</artifactId>         
-  >       <version>1.3</version>         
-  >       <executions>         	
-  >         <execution>             	
-  >           <id>ant-validate</id>                 
-  >           <phase>validate</phase>                 
-  >           <goals>                 	
-  >             <goal>run</goal>                 
-  >           </goals>                 
-  >           <configuration>                 	
-  >             <tasks>                     	
-  >               <echo>I'm bound to validate phase.</echo>                     
-  >             </tasks>                 
-  >           </configuration>             
-  >         </execution>             
-  >         <execution>             	
-  >           <id>ant-verify</id>                 
-  >           <phase>verify</phase>                 
-  >           <goals>                 	
-  >             <goal>run</goal>                 
-  >           </goals>                 
-  >           <configuration>                 	
-  >             <tasks>                     	
-  >               <echo>I'm bound to verify phase.</echo>                     
-  >             </tasks>                 
-  >           </configuration>             
-  >         </execution>         
-  >       </executions>     
-  >     </plugin> 
-  >   </plugins>
+  > <build>
+  > 	<plugins>
+  >  	<plugin>
+  >      	<groupId>org.apache.maven.plugins</groupId>
+  >          <artifactId>maven-antrun-plugin</artifactId>
+  >          <version>1.3</version>
+  >          <executions>
+  >          	<execution>
+  >              	<id>ant-validate</id>
+  >                  <phase>validate</phase>
+  >                  <goals>
+  >                  	<goal>run</goal>
+  >                  </goals>
+  >                  <configuration>
+  >                  	<tasks>
+  >                      	<echo>I'm bound to validate phase.</echo>
+  >                      </tasks>
+  >                  </configuration>
+  >              </execution>
+  >              <execution>
+  >              	<id>ant-verify</id>
+  >                  <phase>verify</phase>
+  >                  <goals>
+  >                  	<goal>run</goal>
+  >                  </goals>
+  >                  <configuration>
+  >                  	<tasks>
+  >                      	<echo>I'm bound to verify phase.</echo>
+  >                      </tasks>
+  >                  </configuration>
+  >              </execution>
+  >          </executions>
+  >      </plugin>
+  >  </plugins>
   > </build>
-  > <!-- 	
-  > 上述代码片段中，首先，maven-antrun-plugin:run与validate阶段绑定，从而构成一个id为ant-validate的任务。	
-  > 插件全局配置中的configuration元素位于plugin元素下面，而这里的configuration元素位于execution元素下，表示这是特定任务的配置，而非插件整体的配置。	
-  > 
-  > ant-validate任务配置了一个echo ant任务，向命令行输出一段文字。第二个任务id为ant-verify，它绑定了verify阶段，同样输出一段文字到命令行，告诉该任务绑定到了verify阶段。
+  > <!-- 
+  > 	上述代码片段中，首先，maven-antrun-plugin:run与validate阶段绑定，从而构成一个id为ant-validate的任务。
+  > 	插件全局配置中的configuration元素位于plugin元素下面，而这里的configuration元素位于execution元素下，表示这是特定任务的配置，而非插件整体的配置。
+  > 	ant-validate任务配置了一个echo ant任务，向命令行输出一段文字。第二个任务id为ant-verify，它绑定了verify阶段，同样输出一段文字到命令行，告诉该任务绑定到了verify阶段。
   > -->
   > ```
 
@@ -483,21 +486,164 @@ Maven会区别对待依赖的远程仓库 与 插件的远程仓库。
 > 不同于repositories 及其repository子元素，插件的远程仓库使用 pluginRepositories和 pluginRepository配置，如下：
 >
 > ```xml
-> <pluginRepositories>	
->   <pluginRepository> 	
->     <id>central</id>     
->     <name>Maven plugin repository</name>     
->     <url>http://repo1.maven.org/maven2</url>     
->     <layout>default</layout>     
->     <snapshots>     	
->       <enabled>false</enabled>     
->     </snapshots>     
->     <releases>     	
->       <updatePolicy>never</updatePolicy>     
->     </releases> 
->   </pluginRepository>
+> <pluginRepositories>
+> 	<pluginRepository>
+>  	<id>central</id>
+>      <name>Maven plugin repository</name>
+>      <url>http://repo1.maven.org/maven2</url>
+>      <layout>default</layout>
+>      <snapshots>
+>      	<enabled>false</enabled>
+>      </snapshots>
+>      <releases>
+>      	<updatePolicy>never</updatePolicy>
+>      </releases>
+>  </pluginRepository>
 > </pluginRepositories>
 > ```
 
 
+
+## 7. 聚合与继承
+
+在这个技术飞速发展的时代，各类用户对软件的要求越来越高，软件本身也变得越来越复杂。因此，软件设计人员往往会采用各种方式对软件划分模块，以得到更清晰的设计及更高的重用性。当把 Maven 应用到实际项目中的时候，也需要将项目分成不同的模块。**<u>Maven 的聚合特性</u>**能够把项目的各个模块聚合在一起构建，而 <u>**Maven 的继承特**</u>性则能帮助抽取各模块相同的依赖和插件等配置，在简化 POM 的同时，还能促进各个模块配置的一致性, 本节闸述Maven的这两个特性。
+
+### 7.1 聚合
+
+如果实现了多个模块，这时**一个简单的需求就会自然而然地显现出来：我们会想要一次构建多个项目，而不是到多个模块的目录下分别执行mvn命令。Maven聚合（或者成为多模块）这一特性就是为该需求服务的。**
+
+> 为了使用一条命令就能构建多个模块。我们需要创建一个额外的聚合模块，例如该模块名为 xxx-aggregator，然后通过该模块构建整个项目的所有模块。
+>
+> xxx-aggregator本身作为一个Maven项目，它必须要有自己的POM，不过，同时作为一个聚合项目，其POM又有特殊的地方。如下：
+>
+> ```xml
+> <!-- 
+> 	1. 这里第一个特殊的地方为packaging，其值为pom。 对于聚合模块来说，其打包方式packaging 的值必须为pom，否则就无法构建。
+>        name字段是为了给项目提供一个更为容易阅读的名字。
+>  	2. 之后是之前都没有提到的元素 modules， 这个是实现聚合的最核心的配置。用户可以通过在一个打包方式为 pom 的Maven项目中声明任意数量的module 元素实现模块的聚合。
+> 	3. 这里的每个module的值都是一个当前聚合POM的相对目录，相对目录，相对目录，重要的事情说三遍。 详情见 Maven实战 8.2小节。
+> 	4. 聚合模块不像其他模块那样有src/main/java, src/test/java等目录。这也是容易理解的，聚合模块仅仅是帮助聚合其他模块构建的工具，他本身并无实质的内容。
+> 	5. 关于目录结构还需要注意的是，聚合模块与其他模块的目录结构并非一定要是父子关系。也可以是平行的目录结构等。因为module 的值是一个当前聚合POM的相对目录。
+> 		使用平行目录结构的modules样例：
+> 	    <modules>
+>             <module>../xxx-email</module>
+>             <module>../xxx-persis</module>
+>             ...
+>     	</modules>	
+> -->
+> 
+> <project>
+> 	<modelVersion>4.0.0</modelVersion>
+>     <groupId>com.xxx.yyy</groupId>
+>     <artifactId>xxx-aggregator</artifactId>
+>     <version>1.0.0-SNAPSHOT</version>
+>     <packaging>pom</packaging>
+>     <name>xxx aggregator</name>
+> 
+>     <modules>
+>         <module>xxx-parent</module>
+>     	<module>xxx-email</module>
+>         <module>xxx-persis</module>
+>         ...
+>     </modules>
+> </project>
+> ```
+>
+> 
+>
+> 此外，为了方便用户构建项目，通常将聚合模块放在项目目录的最顶层，其他模块则作为聚合模块的子目录存在，这样当用户得到源码的时候，第一眼发现的就是聚合模块的POM，不用从多个模块中去寻找聚合模块来构建整个项目。
+
+
+
+### 7.2 继承
+
+当多个POM有着很多相同的配置，例如：多个项目的POM文件有着相同的groupId 和 version，有相同的一些公有依赖，如：spring-core，spring-beans、spring-context 和 junit依赖，还有一些相同的maven-compiler-plugin 与 maven-resources-plugin配置。程序员的嗅觉对这种现象比较敏感，没错，这是重复! 大量的前人经验告诉我们，重复往往就意味着更多的劳动和更多的潜在的问题。在面向对象世界中，程序员可以使用类继承在一定程度上消除重复，在 Maven 的世界中，也有类似的机制能让我们抽取出重复的配置，这就是POM的继承。
+
+> 我们在7.1 小节的基础上，在xxx-aggregation 下创建一个名为xxx-parent 的子目录，然后在该子目录下建立一个所有除xxx-aggregator之外模块的父模块。如下：
+>
+> ```xml
+> <!-- 
+> 	1. 特别注意的是，它的packaging 为pom，这一点与聚合模块一样，作为父模块的POM，其打包类型也必须为pom。 
+> 	2. 由于父模块只是为了帮助消除配置的重复，因此它本身不包含除POM之外的项目文件，也就不需要src/main/java之类的文件夹啦
+> -->
+> <project>
+> 	<modelVersion>4.0.0</modelVersion>
+>     <groupId>com.xxx.yyy</groupId>
+>     <artifactId>xxx-parent</artifactId>
+>     <version>1.0.0-SNAPSHOT</version>
+>     <name>xxx parent</name>
+>     <packaging>pom</packaging>
+> </project>
+> ```
+>
+> 
+>
+> **有了父模块，就需要其他模块来继承它。**如下：一个和xxx-parent目录同级的xxx-email模块继承父模块
+>
+> ```xml
+> <!--
+> 	1. 子模块中使用parent 元素声明父模块，parent下的子元素groupId, artifactId和version 指定了父模块的坐标，这三个元素是必须的。
+> 	2. 元素relativePath 表示父模块POM 的相对路径，该例中表示父POM的位置在与xxx-eamil/ 目录平行的 xxx-parent/ 目录下。 
+> 	   当项目构建时，Maven会首先根据relativePath 检查父POM，如果找不到，在从本地仓库查找，如果还找不到从远程仓库中查找。 
+> 	   relativePath 的默认值是 ../pom.xml,也就是说，Maven默认父POM在上一层目录下。
+> 	3. 在该子模块中，并没与声明groupId 和 version, 不过这并不代表xxx-email 没有groupId 和version。实际上，这个子模块隐士地从父模块继承了这两个元素，这也就消除了一些不必要的配置。
+> 	   此外，如果子模块存在不一样groupId 或者 version的情况，那么完全可以在子模块中显示声明。
+> -->
+> <project>
+>     <parent>
+>     	<groupId>com.xxx.yyy</groupId>
+>         <artifactId>xxx-parent</artifactId>
+>         <version>1.0.0-SNAPSHOT</version>
+>         <relativePath>../xxx-parent/pom.xml</relativePath>
+>     </parent>
+> 
+> 	<!-- 
+> 	<groupId>com.xxx.yyy</groupId>
+>     <version>1.0.0-SNAPSHOT</version>
+> 	-->
+>     <artifactId>xxx-email</artifactId>
+>     <name>xxx email</name>
+>     <packaging>jar</packaging> <!-- 默认为jar， 可省略 -->
+> 
+>     ...
+> </project>
+> ```
+
+* 可继承的POM元素
+
+  * **`groupId`**、**`version`**
+  * `description` ： 项目的描述信息
+  * `organization` ： 项目的组织信息
+  * `inceptionYear`: 项目的创始年份
+  * `url` ：项目的URL地址
+  * `developers` : 项目的开发者信息
+  * `contributors` ： 项目的贡献者信息
+  * `distributionManagement` ： 项目的部署配置
+  * `issueManagement` ： 项目的缺陷跟踪系统信息
+  * `ciManagement`: 项目的持续集成系统信息。
+  * `scm`: 项目的版本控制系统信息。
+  * `mailingLists`: 项目的邮件列表信息。
+  * **`properties`**: 自定义的 Maven 属性。
+  * **`dependencies`**: 项目的依赖配置.
+  * **`dependencyManagement`**: 项目的依赖管理配置。
+  * **`repositories`**: 项目的仓库配置.
+  * **`build`**: 包括项目的源码目录配置、输出目录配置、插件配置、插件管理配置等。
+  * `reporting`: 包括项目的报告输出目录配置、报告插件配置等。
+
+* 依赖管理
+
+  将一些通用的依赖配置放到父模块中，多个子模块就能移除这些依赖，简化配置。**<u>但是这样存在一个问题，如果将来添加一个新的子模块，不一定需要之前的父模块中的全部依赖，如果还全部依赖父模块就显得不合理，因此Maven提供dependencyManagement元素既能让子模块继承到父模块的依赖配置，又能保证子模块依赖使用的灵活性。</u>**
+
+  在dependencyManagement元素下的依赖声明不会引入实际的依赖，不过他能约束dependencies下的依赖使用。 例如：
+
+  【待补充8.3.3】
+
+
+
+## 8. 使用Maven进行测试
+
+## 9. 持续集成
+
+* **`subversion (SVN)`**
+* **`hudson (Jenkins的前身)`**
 
