@@ -142,7 +142,85 @@ Spring自带了一个强大的web框架，Spring MVC。**<u>Spring MVC的核心�
 
 
 
-### 2.1 <span id=jsr>校验表单数据</span>
+### 2.1  <span id=jsr>校验表单数据</span>
+
+#### 2.1.1 声明校验规则
+
+所有的校验注解都包含了一个message属性【该属性可选】，该属性定义了当输入的信息不满足声明的校验规则时要给用户展现的消息。
+
+```java
+@Data
+public class Taco {
+  
+  // 要求name属性不为null，还声明它的值在长度上至少有5个字符
+  @NotNull
+  @Size(min=5, message="Name must be at least 5 characters long")
+  private String name;
+  
+  @Size(min=1, message="You must choose at least 1 ingredient")
+  private List<String> ingredients;
+}
+
+
+@Data
+public class Order {
+  
+  // @NotBlank 数据不为空字符
+  @NotBlank(message="Name is required")
+  private String name;
+  
+  // @CreditCardNumber 声明该属性的值必须是合法的信用卡号
+  @CreditCardNumber(message="Not a valid credit card number")
+  private String ccNumber;
+  
+  // @Pattern 自定义正则匹配
+  @Pattern(regexp="^(0[1-9]|1[0-2])([\\/])([1-9][0-9]$)", message="must be formatted MM/YY")
+  private String ccExpiration;
+  
+  // @Digits 表示包含三个数字
+  @Digits(integer=3, fraction=0, message="invalid CVV")
+  private String ccVV;
+}
+```
+
+#### 2.1.2 执行校验
+
+```java
+// @Valid注解告诉Spring MVC对提交的Taco对象进行校验，而校验时机是在它绑定完数据之后，调用processDesign（）之前。
+@PostMapping
+public String processDesign(@Valid Taco design, Errors errors) {
+  if (errors.hasErrors()) {
+    return "design";
+  }
+  log.info("Processing design: " + design);
+  return "redirect:/orders/current"
+}
+```
+
+
+
+### 2.2 使用控制器
+
+* 一般的控制器都是使用@Controller注解，能够被Spring的组件扫描功能自动发现并初始化为Spring应用上下文中的bean。**我们所编写的大部门控制器都将遵循这个模式。**
+
+* 但是如果一个控制器非常简单，不需要填充模型或处理输入，那么还有一种方式可以定义控制器。
+
+  **也就是只将请求转发到视图而不做任何其他事情的控制器**
+
+  ```java
+  // 
+  @Configuration
+  public class WebConfig implements WebMvcConfigurer {
+    @Override
+    public void addViewControllers(ViewControllerRegistry register) {
+      register.addViewController("/").serViewName("home");
+    }
+  }
+  ```
+
+  
+
+
 
 
 
