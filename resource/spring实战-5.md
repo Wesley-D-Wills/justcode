@@ -203,7 +203,7 @@ public String processDesign(@Valid Taco design, Errors errors) {
 
 * 一般的控制器都是使用@Controller注解，能够被Spring的组件扫描功能自动发现并初始化为Spring应用上下文中的bean。**我们所编写的大部门控制器都将遵循这个模式。**
 
-* 但是如果一个控制器非常简单，不需要填充模型或处理输入，那么还有一种方式可以定义控制器。
+* 但是如果一个控制器非常简单，不需要填充模型或处理输入，那么还有一种方式可以定义控制器。即声明**<u>*视图控制器*</u>**
 
   **也就是只将请求转发到视图而不做任何其他事情的控制器**
 
@@ -220,9 +220,40 @@ public String processDesign(@Valid Taco design, Errors errors) {
 
   
 
+## 3. 使用数据
 
+### 3.1  使用JDBC读取和写入
 
+Spring对JDBC的支持要归功于JdbcTemplate类。JdbcTemlate提供了一种特殊的方式，通过这种方式，开发人员在对关系型数据库执行SQL操作的时候能够避免使用JDBC时常见的繁文缛节和样板式代码。
 
+#### 3.1.1 使用JdbcTemplate
+
+在使用JdbcTemplate之前，我们需要将它添加到项目的类路径中，这一点非常容易，只需要将Spring Boot的JDBC starter依赖添加到构建文件中就可以了：
+
+```xml
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-jdbc</artifactId>
+</dependency>
+```
+
+此外我们还需要一个数据库存储数据，对于开发来说，嵌入式数据库就足够啦。其他外部数据库配置类似。
+
+```xml
+<dependency>
+	<groupId>com.h2database</groupId>
+  <artifactId>h2</artifactId>
+  <scope>runtime</scope>
+</dependency>
+```
+
+* JdbcTemplate常用的方法
+
+  * query() : 接受要执行的SQL以及 RowMapper的一个实现(用来将结果集中的每行数据映射为一个对象)。
+  * queryForObject() ： 和query方法类似，只不过他只返回一个对象，而不是对象的list
+  * Update() ：可以用来执行向数据库中**写入(保存，插入)或者更新**数据的查询语句。
+
+  
 
 
 
