@@ -1,1 +1,1 @@
-alert("wx");
+alert(1);
